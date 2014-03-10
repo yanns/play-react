@@ -4,6 +4,8 @@
 
 # Home page
 GET        /                      controllers.Application.index
+GET        /2                     controllers.Application.indexTrireme
+GET        /3                     controllers.Application.indexJsEngine
 
 GET        /webjars/*file         controllers.WebJarAssets.at(file)
 
