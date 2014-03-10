@@ -1,9 +1,10 @@
 package controllers
 
-import play.api.mvc.{SimpleResult, BodyParser, Action, Controller}
+import play.api.mvc.{Action, Controller}
 import play.api.libs.json.Json
-import scala.concurrent.Promise
+import scala.concurrent.{Future, Promise}
 import play.api.libs.concurrent.Akka
+import play.api.libs.concurrent.Execution.Implicits._
 
 object Comments extends Controller {
 
@@ -13,34 +14,45 @@ object Comments extends Controller {
   }
 
   object CommentRepository {
-    var comments = List(
+    private var comments = List(
       Comment(author = "Pete Hunt", text = "This is one comment"),
       Comment(author = "Jordan Walke", text = "This is *another* comment")
     )
+
+    def addComment(comment: Comment) {
+      comments = comment :: comments
+    }
+
+    def getComments = {
+      import play.api.Play.current
+      import scala.concurrent.duration._
+
+      // simulate slow backend
+      val promise = Promise[Seq[Comment]]()
+      Akka.system.scheduler.scheduleOnce(500 milliseconds) {
+        promise.success(comments)
+      }
+      promise.future
+    }
   }
 
   def list = Action.async {
-    import play.api.Play.current
-    import play.api.libs.concurrent.Execution.Implicits._
-    import scala.concurrent.duration._
-
-    // simulate slow backend
-    val promise = Promise[SimpleResult]
-    Akka.system.scheduler.scheduleOnce(500 milliseconds) {
-      promise.success(Ok(Json.toJson(CommentRepository.comments)))
+    CommentRepository.getComments map { comments =>
+      Ok(Json.toJson(comments))
     }
-    promise.future
   }
 
-  def newPost = Action { request =>
+  def newPost = Action.async { request =>
     val result = for {
       json <- request.body.asJson
       comment <- json.asOpt[Comment]
     } yield {
-      CommentRepository.comments = comment :: CommentRepository.comments
-      Ok(Json.toJson(CommentRepository.comments))
+      CommentRepository.addComment(comment)
+      CommentRepository.getComments map { comments =>
+        Ok(Json.toJson(comments))
+      }
     }
-    result.getOrElse(BadRequest)
+    result getOrElse Future.successful(BadRequest)
   }
 
 }

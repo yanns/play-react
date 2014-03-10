@@ -6,12 +6,11 @@ var data = JSON.parse(process.argv[2]);
 
 var backend = {
     loadCommentsFromServer: function(settings) {
-        settings.success(data);
     },
     handleCommentSubmit: function(settings) {
     }
 };
 
-console.log(React.renderComponentToString(CommentBox(backend)({})));
+console.log(React.renderComponentToString(CommentBox(backend)({data: data})));
 
 
