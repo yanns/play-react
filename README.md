@@ -6,7 +6,7 @@ Proof of concept of running react.js on the server side with play
 Rendering on the Client Side
 ----------------------------
 
-The page under [/clientSide](http://localhost:9000/clientSide) suffers with a "Flash Of No-Data Content".
+The page under [/clientSide](http://play-react.herokuapp.com/clientSide) suffers with a "Flash Of No-Data Content".
 To display some data, the browser must:
  1. load the page and the html
  2. make an ajax request to the server
@@ -18,15 +18,15 @@ This sample application simulates a slow AJAX response to make this flash visibl
 Pre rendering on the Server Side 
 --------------------------------
 
-The page under [/serverSide](http://localhost:9000/serverSide) pre-renders the html on the server side
+The page under [/serverSide](http://play-react.herokuapp.com/serverSide) pre-renders the html on the server side
 and displays the page already with data.
 
 The changes on the client side are then applied dynamically with the normal client side JavaScript
 ReactJS code.
 
 The pre-render the ReactJS components on the server side, the following libraries are used:
-- [/serverSide](http://localhost:9000/serverSide) uses [trireme](https://github.com/apigee/trireme) provides a Node API on the JVM with Rhino
-- [/serverSide2](http://localhost:9000/serverSide2) uses [js-engine](https://github.com/typesafehub/js-engine) that itself uses [trireme](https://github.com/apigee/trireme) behind [Akka](http://akka.io/) actors
+- [/serverSide](http://play-react.herokuapp.com/serverSide) uses [trireme](https://github.com/apigee/trireme) provides a Node API on the JVM with Rhino
+- [/serverSide2](http://play-react.herokuapp.com/serverSide2) uses [js-engine](https://github.com/typesafehub/js-engine) that itself uses [trireme](https://github.com/apigee/trireme) behind [Akka](http://akka.io/) actors
 
 TODOs:
 ------
