@@ -28,9 +28,15 @@ The pre-render the ReactJS components on the server side, the following librarie
 - [/serverSide](http://play-react.herokuapp.com/serverSide) uses [trireme](https://github.com/apigee/trireme) provides a Node API on the JVM with Rhino
 - [/serverSide2](http://play-react.herokuapp.com/serverSide2) uses [js-engine](https://github.com/typesafehub/js-engine) that itself uses [trireme](https://github.com/apigee/trireme) behind [Akka](http://akka.io/) actors
 
+Pre rendering on the Server Side and streaming the page
+-------------------------------------------------------
+
+The pre-rendered page waits for the data before sending any bytes to the browser.
+To optimize this, another version [/serverSideStreaming](http://play-react.herokuapp.com/serverSideStreaming) send the first bytes immediately, to let the browser load the CSS / JavaScript, and then send the rest of the body when available.
+For this, I used the Facebook’s BigPipe concept as presented in the [talk “Building composable, streaming, testable Play apps” from Yevgeniy Brikman](http://de.slideshare.net/brikis98/composable-and-streamable-play-apps)
+
 TODOs:
 ------
 
 - use nodejs styles modules for the client side libraries -> bind [browserify](http://browserify.org/) or similar tool
-- the pre-rendered page waits for the data before sending any bytes to the browser. To optimize this, we could send the first bytes immediately, to let the browser load the CSS / JavaScript, and then send the rest of the body when available.
-For this, we can use the Facebook’s BigPipe concept as presented in the [talk “Building composable, streaming, testable Play apps” from Yevgeniy Brikman](http://de.slideshare.net/brikis98/composable-and-streamable-play-apps)
+

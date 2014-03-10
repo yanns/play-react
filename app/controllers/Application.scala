@@ -13,6 +13,7 @@ import play.api.libs.json.Json
 import play.api.templates.Html
 import com.typesafe.jse.Engine.JsExecutionResult
 import play.api.libs.concurrent.Execution.Implicits._
+import ui.HtmlStream
 
 
 object Application extends Controller {
@@ -66,6 +67,26 @@ object Application extends Controller {
     } yield {
       Ok(views.html.index(Html(new String(result.output.toArray, "UTF-8"))))
     }
+  }
+
+  def serverSideStream = Action { request =>
+    import akka.pattern.ask
+    import scala.concurrent.duration._
+    import ui.HtmlStreamImplicits._
+
+    val serverside = Play.getFile("public/javascripts/serverside.js")
+    implicit val timeout = Timeout(5.seconds)
+    val engine = Akka.system.actorOf(Trireme.props(), s"engine-${request.id}")
+
+    val prerendererHtml = for {
+      data <- initialData
+      result <- (engine ? Engine.ExecuteJs(new File(serverside.toURI), List(data))).mapTo[JsExecutionResult]
+    } yield {
+      Html(new String(result.output.toArray, "UTF-8"))
+    }
+
+    val prerendererHtmlStream = HtmlStream(prerendererHtml)
+    Ok.chunked(views.stream.main(prerendererHtmlStream))
   }
 
 }

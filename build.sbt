@@ -11,3 +11,9 @@ libraryDependencies ++= Seq(
 )
 
 play.Project.playScalaSettings
+
+// Add a new template type for streaming templates
+play.Keys.templatesTypes += ("stream" -> "ui.HtmlStreamFormat")
+
+// Add some useful default imports for streaming templates
+play.Keys.templatesImport ++= Vector("_root_.ui.HtmlStream", "_root_.ui.HtmlStream._")

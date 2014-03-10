@@ -1,0 +1,16 @@
+@(content: ui.HtmlStream)
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Integration of Play and React</title>
+        <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("react.min.js"))'></script>
+        <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.min.js"))'></script>
+        <script type='text/javascript' src='@routes.Assets.at("javascripts/output.js")'></script>
+    </head>
+    <body>
+        <div id="content">@content</div>
+    </body>
+    <script type='text/javascript' src='@routes.Assets.at("javascripts/main.js")'></script>
+</html>
