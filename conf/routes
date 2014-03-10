@@ -3,11 +3,14 @@
 # ~~~~
 
 # Home page
-GET        /                      controllers.Application.index
-GET        /2                     controllers.Application.indexTrireme
-GET        /3                     controllers.Application.indexJsEngine
+GET        /                     controllers.Application.index
+GET        /clientSide           controllers.Application.clientSide
+GET        /serverSide           controllers.Application.serverSide
+GET        /serverSide2          controllers.Application.serverSide2
+GET        /comments.json        controllers.Comments.list
+POST       /comments.json        controllers.Comments.newPost
 
-GET        /webjars/*file         controllers.WebJarAssets.at(file)
+GET        /webjars/*file        controllers.WebJarAssets.at(file)
 
 # Map static resources from the /public folder to the /assets URL path
-GET        /assets/*file          controllers.Assets.at(path="/public", file)
+GET        /assets/*file         controllers.Assets.at(path="/public", file)

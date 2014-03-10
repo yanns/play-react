@@ -1,4 +1,4 @@
-@(title: String)(content: Html)
+@(title: String, content: Html)
 
 <!DOCTYPE html>
 
@@ -7,8 +7,10 @@
         <title>@title</title>
     </head>
     <body>
-        <div id="content"></div>
+        <div id="content">@content</div>
     </body>
     <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("react.min.js"))'></script>
+    <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.min.js"))'></script>
+    <script type='text/javascript' src='@routes.Assets.at("javascripts/output.js")'></script>
     <script type='text/javascript' src='@routes.Assets.at("javascripts/main.js")'></script>
 </html>
