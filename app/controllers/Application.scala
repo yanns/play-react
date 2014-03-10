@@ -32,23 +32,21 @@ object Application extends Controller {
   // with trireme directly
   def serverSide = Action.async {
     initialData flatMap { data =>
-      val result = Play.resource("public/javascripts/serverside.js") map { serverside =>
-        val stdout = new ByteArrayOutputStream()
-        val env = new NodeEnvironment()
-        val sandbox = new Sandbox()
-        sandbox.setStdout(stdout)
-        val script = env.createScript("serverside.js", new File(serverside.toURI), Array(data))
-        script.setSandbox(sandbox)
-        val htmlResult = Promise[SimpleResult]()
-        script.execute().setListener(new ScriptStatusListener() {
-          override def onComplete(script: NodeScript, status: ScriptStatus): Unit = {
-            val result = stdout.toString("UTF-8")
-            htmlResult.success(Ok(views.html.index(Html(result))))
-          }
-        })
-        htmlResult.future
-      }
-      result getOrElse Future.successful(NotFound)
+      val serverside = Play.getFile("public/javascripts/serverside.js")
+      val stdout = new ByteArrayOutputStream()
+      val env = new NodeEnvironment()
+      val sandbox = new Sandbox()
+      sandbox.setStdout(stdout)
+      val script = env.createScript("serverside.js", new File(serverside.toURI), Array(data))
+      script.setSandbox(sandbox)
+      val htmlResult = Promise[SimpleResult]()
+      script.execute().setListener(new ScriptStatusListener() {
+        override def onComplete(script: NodeScript, status: ScriptStatus): Unit = {
+          val result = stdout.toString("UTF-8")
+          htmlResult.success(Ok(views.html.index(Html(result))))
+        }
+      })
+      htmlResult.future
     }
   }
 
@@ -58,18 +56,16 @@ object Application extends Controller {
     import akka.pattern.ask
     import scala.concurrent.duration._
 
-    val result = Play.resource("public/javascripts/serverside.js") map { serverside =>
-      implicit val timeout = Timeout(5.seconds)
-      val engine = Akka.system.actorOf(Trireme.props(), s"engine-${request.id}")
+    val serverside = Play.getFile("public/javascripts/serverside.js")
+    implicit val timeout = Timeout(5.seconds)
+    val engine = Akka.system.actorOf(Trireme.props(), s"engine-${request.id}")
 
-      for {
-        data <- initialData
-        result <- (engine ? Engine.ExecuteJs(new File(serverside.toURI), List(data))).mapTo[JsExecutionResult]
-      } yield {
-        Ok(views.html.index(Html(new String(result.output.toArray, "UTF-8"))))
-      }
+    for {
+      data <- initialData
+      result <- (engine ? Engine.ExecuteJs(new File(serverside.toURI), List(data))).mapTo[JsExecutionResult]
+    } yield {
+      Ok(views.html.index(Html(new String(result.output.toArray, "UTF-8"))))
     }
-    result getOrElse Future.successful(NotFound)
   }
 
 }
