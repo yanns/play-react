@@ -32,7 +32,7 @@ Pre rendering on the Server Side and streaming the page
 -------------------------------------------------------
 
 The pre-rendered page waits for the data before sending any bytes to the browser.
-To optimize this, another version [/serverSideStreaming](http://play-react.herokuapp.com/serverSideStreaming) send the first bytes immediately, to let the browser load the CSS / JavaScript, and then send the rest of the body when available.
+To optimize this, another version [/serverSideStream](http://play-react.herokuapp.com/serverSideStream) send the first bytes immediately, to let the browser load the CSS / JavaScript, and then send the rest of the body when available.
 For this, I used the Facebook’s BigPipe concept as presented in the [talk “Building composable, streaming, testable Play apps” from Yevgeniy Brikman](http://de.slideshare.net/brikis98/composable-and-streamable-play-apps)
 
 TODOs:
