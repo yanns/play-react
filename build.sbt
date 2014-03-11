@@ -12,6 +12,8 @@ libraryDependencies ++= Seq(
 
 play.Project.playScalaSettings
 
+PublicOnFileSystem.settings
+
 // Add a new template type for streaming templates
 play.Keys.templatesTypes += ("stream" -> "ui.HtmlStreamFormat")
 
