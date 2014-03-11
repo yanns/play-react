@@ -28,6 +28,7 @@ var CommentBox = function(backend) {
         render: function() {
             return (
                 React.DOM.div({
+                    id: 'commentBox',
                     className: 'commentBox',
                     children: [
                         React.DOM.h1({children: 'Comments'}),

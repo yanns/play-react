@@ -17,14 +17,23 @@ var backend = {
     }
 };
 
-backend.loadCommentsFromServer({
-    success: function(data) {
-        React.renderComponent(
-            CommentBox(backend)({data: data}),
-            document.getElementById('content')
-        );
-    },
-    error: function(xhr, status, err) {
-        console.error(status, err.toString());
-    }
-});
+if (document.getElementById('commentBox') == null) {
+    React.renderComponent(
+        CommentBox(backend)({data: []}),
+        document.getElementById('content')
+    );
+} else {
+    // commentBox already there
+    // bind the client side component only with data
+    backend.loadCommentsFromServer({
+        success: function(data) {
+            React.renderComponent(
+                CommentBox(backend)({data: data}),
+                document.getElementById('content')
+            );
+        },
+        error: function(xhr, status, err) {
+            console.error(status, err.toString());
+        }
+    });
+}
