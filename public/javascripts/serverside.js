@@ -11,6 +11,6 @@ var backend = {
     }
 };
 
-console.log(React.renderComponentToString(CommentBox(backend)({data: data})));
+console.log(React.renderComponentToString(CommentBox(backend)({data: data, onServerSide: true})));
 
 

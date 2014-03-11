@@ -68,15 +68,21 @@ var CommentBox = function(backend) {
                 }.bind(this)
             });
         },
-        componentWillMount: function() {
+        loadCommentsFromServer: function() {
             backend.loadCommentsFromServer({
                 success: function(data) {
                     this.setState({data: data});
                 }.bind(this),
                 error: function(xhr, status, err) {
-                    console.error(this.props.url, status, err.toString());
+                    console.error(status, err.toString());
                 }.bind(this)
             });
+        },
+        componentWillMount: function() {
+            if (!this.props.onServerSide) {
+                this.loadCommentsFromServer();
+                setInterval(this.loadCommentsFromServer, 2000);
+            }
         },
         render: function() {
             return (

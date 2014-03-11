@@ -15,7 +15,7 @@ var CommentBox = function(backend) {
                 }.bind(this)
             });
         },
-        componentWillMount: function() {
+        loadCommentsFromServer: function() {
             backend.loadCommentsFromServer({
                 success: function(data) {
                     this.setState({data: data});
@@ -24,6 +24,12 @@ var CommentBox = function(backend) {
                     console.error(status, err.toString());
                 }.bind(this)
             });
+        },
+        componentWillMount: function() {
+            if (!this.props.onServerSide) {
+                this.loadCommentsFromServer();
+                setInterval(this.loadCommentsFromServer, 2000);
+            }
         },
         render: function() {
             return (
