@@ -27,6 +27,7 @@ ReactJS code.
 The pre-render the ReactJS components on the server side, the following libraries are used:
 - [/serverSide](http://play-react.herokuapp.com/serverSide) uses [trireme](https://github.com/apigee/trireme) provides a Node API on the JVM with Rhino
 - [/serverSide2](http://play-react.herokuapp.com/serverSide2) uses [js-engine](https://github.com/typesafehub/js-engine) that itself uses [trireme](https://github.com/apigee/trireme) behind [Akka](http://akka.io/) actors
+- /serverSideNode uses [js-engine](https://github.com/typesafehub/js-engine) that itself uses NodeJS
 
 Pre rendering on the Server Side and streaming the page
 -------------------------------------------------------

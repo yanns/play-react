@@ -4,7 +4,7 @@ import play.api._
 import play.api.Play.current
 import play.api.mvc._
 import java.io.{ByteArrayOutputStream, File}
-import com.typesafe.jse.{Engine, Trireme}
+import com.typesafe.jse.{Node, Engine, Trireme}
 import play.api.libs.concurrent.Akka
 import scala.concurrent.{Promise, Future}
 import akka.util.Timeout
@@ -14,6 +14,7 @@ import play.api.templates.Html
 import com.typesafe.jse.Engine.JsExecutionResult
 import play.api.libs.concurrent.Execution.Implicits._
 import ui.HtmlStream
+import akka.actor.Props
 
 
 object Application extends Controller {
@@ -53,13 +54,18 @@ object Application extends Controller {
 
 
   // with js-engine
-  def serverSide2 = Action.async { request =>
+  def serverSide2 = serverSideWithJsEngine(Trireme.props())
+
+  // with node
+  def serverSideNode = serverSideWithJsEngine(Node.props())
+
+  private def serverSideWithJsEngine(jsEngine: Props) = Action.async { request =>
     import akka.pattern.ask
     import scala.concurrent.duration._
 
     val serverside = Play.getFile("public/javascripts/serverside.js")
     implicit val timeout = Timeout(5.seconds)
-    val engine = Akka.system.actorOf(Trireme.props(), s"engine-${request.id}")
+    val engine = Akka.system.actorOf(jsEngine, s"engine-${request.id}")
 
     for {
       data <- initialData
