@@ -6,7 +6,7 @@
 GET        /                     controllers.Application.index
 GET        /clientSide           controllers.Application.clientSide
 GET        /serverSide           controllers.Application.serverSide
-GET        /serverSide2          controllers.Application.serverSide2
+GET        /serverSide2          controllers.Application.serverSideTrireme
 GET        /serverSideNode       controllers.Application.serverSideNode
 GET        /serverSideStream     controllers.Application.serverSideStream
 GET        /comments.json        controllers.Comments.list

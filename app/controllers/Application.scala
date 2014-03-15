@@ -54,7 +54,7 @@ object Application extends Controller {
 
 
   // with js-engine
-  def serverSide2 = serverSideWithJsEngine(Trireme.props())
+  def serverSideTrireme = serverSideWithJsEngine(Trireme.props())
 
   // with node
   def serverSideNode = serverSideWithJsEngine(Node.props())
