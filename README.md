@@ -3,6 +3,8 @@ play-react
 
 Proof of concept of running react.js on the server side with play
 
+[Details](http://yanns.github.io/blog/2014/03/15/server-side-rendering-for-javascript-reactjs-framework/
+
 Rendering on the Client Side
 ----------------------------
 
