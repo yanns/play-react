@@ -12,7 +12,5 @@ GET        /serverSideStream     controllers.Application.serverSideStream
 GET        /comments.json        controllers.Comments.list
 POST       /comments.json        controllers.Comments.newPost
 
-GET        /webjars/*file        controllers.WebJarAssets.at(file)
-
 # Map static resources from the /public folder to the /assets URL path
 GET        /assets/*file         controllers.Assets.at(path="/public", file)

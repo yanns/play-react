@@ -1,14 +1,15 @@
 package ui
 
-import play.api.libs.iteratee.{Iteratee, Enumeratee, Enumerator}
-import play.api.templates.{HtmlFormat, Html}
-import play.templates.{Format, Appendable}
-import scala.concurrent.Future
-import play.api.mvc.{Codec, SimpleResult}
+import play.api.http.{ContentTypeOf, Writeable}
 import play.api.libs.concurrent.Execution.Implicits._
-import play.mvc.Results.Chunks.Out
-import play.api.http.{Writeable, ContentTypeOf}
+import play.api.libs.iteratee.{Enumeratee, Enumerator, Iteratee}
+import play.api.mvc.{Codec, Result}
 import play.mvc.Results.Chunks
+import play.mvc.Results.Chunks.Out
+import play.twirl.api.{Appendable, Format, Html, HtmlFormat}
+
+import scala.collection.immutable.Seq
+import scala.concurrent.Future
 
 /**
  * A custom Appendable that lets us have .scala.stream templates instead of .scala.html. These templates can mix Html
@@ -49,14 +50,14 @@ object HtmlStream {
   /**
    * Create an HtmlStream from the body of the SimpleResult.
    */
-  def fromResult(result: SimpleResult): HtmlStream = {
+  def fromResult(result: Result): HtmlStream = {
     HtmlStream(result.body.map(bytes => Html(new String(bytes, "UTF-8"))))
   }
 
   /**
    * Create an HtmlStream from a the body of a Future[SimpleResult].
    */
-  def fromResult(result: Future[SimpleResult]): HtmlStream = {
+  def fromResult(result: Future[Result]): HtmlStream = {
     flatten(result.map(fromResult))
   }
 
@@ -80,7 +81,7 @@ object HtmlStream {
    * scala's Seq
    */
   def interleave(streams: java.util.List[HtmlStream]): HtmlStream = {
-    import collection.JavaConverters._
+    import scala.collection.JavaConverters._
     HtmlStream(Enumerator.interleave(streams.asScala.map(_.enumerator)))
   }
 
@@ -108,13 +109,16 @@ object HtmlStream {
  */
 object HtmlStreamFormat extends Format[HtmlStream] {
 
-  def raw(text: String): HtmlStream = {
+  override def raw(text: String): HtmlStream =
     HtmlStream(text)
-  }
 
-  def escape(text: String): HtmlStream = {
+  override def escape(text: String): HtmlStream =
     raw(HtmlFormat.escape(text).body)
-  }
+
+  override def empty: HtmlStream = raw("")
+
+  override def fill(elements: Seq[HtmlStream]): HtmlStream =
+    HtmlStream.interleave(elements:_*)
 }
 
 /**

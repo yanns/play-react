@@ -5,8 +5,8 @@
 <html>
     <head>
         <title>Integration of Play and React</title>
-        <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("react.min.js"))'></script>
-        <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.min.js"))'></script>
+        <script type='text/javascript' src='@routes.Assets.at("lib/react/react.min.js")'></script>
+        <script type='text/javascript' src='@routes.Assets.at("lib/jquery/jquery.min.js")'></script>
         <script type='text/javascript' src='@routes.Assets.at("javascripts/output.js")'></script>
     </head>
     <body>
