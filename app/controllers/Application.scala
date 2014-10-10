@@ -1,20 +1,23 @@
 package controllers
 
-import play.api._
-import play.api.Play.current
-import play.api.mvc._
 import java.io.{ByteArrayOutputStream, File}
-import com.typesafe.jse.{Node, Engine, Trireme}
-import play.api.libs.concurrent.Akka
-import scala.concurrent.{Promise, Future}
-import akka.util.Timeout
-import io.apigee.trireme.core._
-import play.api.libs.json.Json
-import play.api.templates.Html
-import com.typesafe.jse.Engine.JsExecutionResult
-import play.api.libs.concurrent.Execution.Implicits._
-import ui.HtmlStream
+
 import akka.actor.Props
+import akka.util.Timeout
+import com.typesafe.jse.Engine.JsExecutionResult
+import com.typesafe.jse.{Engine, Node, Trireme}
+import io.apigee.trireme.core._
+import play.api.Play.current
+import play.api._
+import play.api.libs.concurrent.Akka
+import play.api.libs.concurrent.Execution.Implicits._
+import play.api.libs.json.Json
+import play.api.mvc._
+import play.twirl.api.Html
+import ui.HtmlStream
+
+import scala.concurrent.Promise
+import scala.concurrent.duration._
 
 
 object Application extends Controller {
@@ -27,7 +30,7 @@ object Application extends Controller {
     Ok(views.html.index())
   }
 
-  private def initialData = Comments.CommentRepository.getComments map { comments =>
+  private def initialData() = Comments.CommentRepository.getComments map { comments =>
     Json.stringify(Json.toJson(comments))
   }
 
@@ -41,7 +44,7 @@ object Application extends Controller {
       sandbox.setStdout(stdout)
       val script = env.createScript("serverside.js", new File(serverside.toURI), Array(data))
       script.setSandbox(sandbox)
-      val htmlResult = Promise[SimpleResult]()
+      val htmlResult = Promise[Result]()
       script.execute().setListener(new ScriptStatusListener() {
         override def onComplete(script: NodeScript, status: ScriptStatus): Unit = {
           val result = stdout.toString("UTF-8")
@@ -61,15 +64,18 @@ object Application extends Controller {
 
   private def serverSideWithJsEngine(jsEngine: Props) = Action.async { request =>
     import akka.pattern.ask
-    import scala.concurrent.duration._
 
     val serverside = Play.getFile("public/javascripts/serverside.js")
     implicit val timeout = Timeout(5.seconds)
     val engine = Akka.system.actorOf(jsEngine, s"engine-${request.id}")
 
     for {
-      data <- initialData
-      result <- (engine ? Engine.ExecuteJs(new File(serverside.toURI), List(data))).mapTo[JsExecutionResult]
+      data <- initialData()
+      result <- (engine ? Engine.ExecuteJs(
+        source = new File(serverside.toURI),
+        args = List(data),
+        timeout = timeout.duration
+      )).mapTo[JsExecutionResult]
     } yield {
       Ok(views.html.index(Html(new String(result.output.toArray, "UTF-8"))))
     }
@@ -77,16 +83,20 @@ object Application extends Controller {
 
   def serverSideStream = Action { request =>
     import akka.pattern.ask
-    import scala.concurrent.duration._
     import ui.HtmlStreamImplicits._
+
 
     val serverside = Play.getFile("public/javascripts/serverside.js")
     implicit val timeout = Timeout(5.seconds)
     val engine = Akka.system.actorOf(Trireme.props(), s"engine-${request.id}")
 
     val prerendererHtml = for {
-      data <- initialData
-      result <- (engine ? Engine.ExecuteJs(new File(serverside.toURI), List(data))).mapTo[JsExecutionResult]
+      data <- initialData()
+      result <- (engine ? Engine.ExecuteJs(
+        source = new File(serverside.toURI),
+        args = List(data),
+        timeout = timeout.duration
+      )).mapTo[JsExecutionResult]
     } yield {
       Html(new String(result.output.toArray, "UTF-8"))
     }
