@@ -4,12 +4,12 @@ name := "play-react"
 
 version := "1.0-SNAPSHOT"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.11.3"
 
 libraryDependencies ++= Seq(
   "org.webjars" % "react" % "0.11.2",
   "org.webjars" % "jquery" % "2.1.1",
-  "com.typesafe" %% "jse" % "1.0.0",
+  "com.typesafe" %% "jse" % "1.0.2",
   "io.apigee.trireme" % "trireme" % "0.8.2"
 )
 
