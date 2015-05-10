@@ -9,8 +9,8 @@ scalaVersion := "2.11.6"
 libraryDependencies ++= Seq(
   "org.webjars" % "react" % "0.11.2",
   "org.webjars" % "jquery" % "2.1.1",
-  "com.typesafe" %% "jse" % "1.0.2",
-  "io.apigee.trireme" % "trireme" % "0.8.2"
+  "com.typesafe" %% "jse" % "1.1.1",
+  "io.apigee.trireme" % "trireme" % "0.8.5"
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
