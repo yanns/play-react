@@ -7,6 +7,7 @@ GET        /                     controllers.Application.index
 GET        /clientSide           controllers.Application.clientSide
 GET        /serverSide           controllers.Application.serverSide
 GET        /serverSide2          controllers.Application.serverSideTrireme
+GET        /serverSideJavax      controllers.Application.serverSideJavax
 GET        /serverSideNode       controllers.Application.serverSideNode
 GET        /serverSideStream     controllers.Application.serverSideStream
 GET        /comments.json        controllers.Comments.list

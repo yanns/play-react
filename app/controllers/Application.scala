@@ -5,7 +5,7 @@ import java.io.{ByteArrayOutputStream, File}
 import akka.actor.Props
 import akka.util.Timeout
 import com.typesafe.jse.Engine.JsExecutionResult
-import com.typesafe.jse.{Engine, Node, Trireme}
+import com.typesafe.jse.{Engine, Node, JavaxEngine, Trireme}
 import io.apigee.trireme.core._
 import play.api.Play.current
 import play.api._
@@ -55,6 +55,7 @@ object Application extends Controller {
     }
   }
 
+  def serverSideJavax = serverSideWithJsEngine(JavaxEngine.props())
 
   // with js-engine
   def serverSideTrireme = serverSideWithJsEngine(Trireme.props())
